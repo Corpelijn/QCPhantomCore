@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <RootNamespace>PIX13</RootNamespace>
+    <AssemblyName>PIX13</AssemblyName>
+  </PropertyGroup>
+
+</Project>
