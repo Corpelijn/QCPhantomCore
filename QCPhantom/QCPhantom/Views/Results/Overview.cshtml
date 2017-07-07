@@ -1,0 +1,190 @@
+
+@{
+    ViewData["Title"] = "Overzicht";
+}
+
+<script>
+    $(document).ready(function () {
+        showLoadingAnimation(true);
+        $('.foldable-table-row').click(function () {
+            var icon = $(this).find('.row-icon');
+            if (icon.hasClass('row-closed')) {
+                icon.removeClass('fa-plus-square');
+                icon.removeClass('row-closed');
+                icon.addClass('fa-minus-square');
+                icon.addClass('row-opened');
+
+                var contentId = $(this).attr('row-id');
+                $('tr[content-row-id$="' + contentId + '"]').removeClass('hidden');
+            } else {
+                icon.removeClass('fa-minus-square');
+                icon.removeClass('row-opened');
+                icon.addClass('fa-plus-square');
+                icon.addClass('row-closed');
+
+                var contentId = $(this).attr('row-id');
+                $('tr[content-row-id$="' + contentId + '"]').addClass('hidden');
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#renew-btn').click(function () { 
+            reloadStudies();
+        });
+     });
+
+    function showLoadingAnimation(display) {
+        if (display)
+            $('#loading-animation').removeClass('hidden');
+        else
+            $('#loading-animation').addClass('hidden');
+    }
+
+    function buildFilter() {
+        return 'orderby=analysedate&orderdirection=asc';
+    }
+
+    function reloadStudies() {
+        clearTable();
+        var filter = buildFilter();
+
+        console.log('test');
+
+        $.ajax({
+            type: 'GET',
+            url: '/Results/FilterResults?' + filter,
+            contentType: "application/json",
+            dataType: 'json',
+            success: function (json) {
+                console.log(json);
+            },
+            error: function (e) {
+                console.log("jQuery error message = " + e.message);
+            }
+        });
+    }
+
+    function clearTable() {
+        $('#result-table-body').empty();
+    }
+
+</script>
+
+<div class="col-md-12 col-xs-6">
+    <div class="box box-info collapsed-box">
+        <div class="box-header">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-plus"></i>
+            </button>
+            <h3 class="box-title">Filters</h3>
+        </div>
+        <div class="box-body">
+            Put some pretty awesome filters in here
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="row">
+        <table class="table table-hover table-striped">
+            <tr>
+                <th width="2%"></th>
+                <th>Datum en tijd</th>
+                <th>PACS assession</th>
+                <th>Study instance UID</th>
+                <th>Machine(s)</th>
+                <th>Detector(s)</th>
+            </tr>
+
+            <tbody id="result-table-body">
+                @for (int i = 0; i < 5; i++)
+            {
+                    <tr class="foldable-table-row" row-id="@i">
+                        <td>
+                            <!-- Display the plus/minus icon on the left of each row -->
+                            <i class="fa fa-plus-square row-icon text-blue row-closed"></i>
+                        </td>
+                        <td>
+                            <!-- Display the date and time values -->
+                            17 juni 2017 17:48
+                        </td>
+                        <td>
+                            <!-- Display the PACS accession number -->
+                            51234854
+                        </td>
+                        <td>
+                            <!-- Display the Instance UID of the Study -->
+                            9234.9834.9849283.03498059348502.456
+                        </td>
+                        <td>
+                            <!-- Display the machine information -->
+                            QC light kamer 5
+                        </td>
+                        <td>
+                            <!-- Display the amount of images in the study -->
+                            Detector 3
+                        </td>
+                    </tr>
+                    <tr class="hidden content-row" content-row-id="@i">
+                        <td></td>
+                        <td colspan="5">
+                            <table class="table">
+                                <tr>
+                                    <th>Image UID</th>
+                                    <th>Status</th>
+                                    <th>Machine</th>
+                                    <th>Detector</th>
+                                    <th>Acties</th>
+                                </tr>
+                                @for (int j = 0; j < 3; j++)
+                                {
+                                    <tr>
+                                        <td>
+                                            <!-- Display the date and time values -->
+                                            9234.9834.9849283.03498059348502.456
+                                        </td>
+                                        <td>
+                                            <!-- Display the PACS accession number -->
+                                            In Orde
+                                        </td>
+                                        <td>
+                                            <!-- Display the Instance UID of the Study -->
+                                            QC light Kamer 5
+                                        </td>
+                                        <td>
+                                            <!-- Display the machine information -->
+                                            Detector 4
+                                        </td>
+                                        <td>
+                                            <!-- Display the amount of images in the study -->
+                                            <button class="btn btn-success btn-xs">Openen</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row" id="loading-animation">
+        <br />
+        <center>
+            <!--<i class="fa fa-refresh fa-spin fa-4x"></i>-->
+            <img src="~/images/spinner.gif" width="75px" />
+            <br />
+            <br />
+            <font style="font-size: 10pt">
+                Resultaten laden<br />
+                Een ogenblik geduld
+            </font>
+        </center>
+    </div>
+
+    <div class="row">
+        <button class="btn btn-primary" id="renew-btn">Renew</button>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+﻿
+<script>
+    Array.prototype.clean = function (deleteValue) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == deleteValue) {
+                this.splice(i, 1);
+                i--;
+            }
+        }
+        return this;
+    };
+
+    // The main script for selecting the current menu item
+    $(document).ready(function () {
+        SelectMenuItem();
+
+        var elements = $('.active');
+        for (var i = 0; i < elements.length; i++) {
+            if (elements[i].classList.contains('treeview') || elements[i].classList.contains('treeview-menu')) {
+                elements[i].addEventListener('click', function () {
+                    SelectMenuItem();
+                });
+            }
+        }
+    });
+
+    function SelectMenuItem() {
+        var path = window.location.pathname;
+        var abc = path.split("/").clean("");
+        var controller = abc[0] || "Home";
+        var action = abc[1] || "Index";
+
+        var control = $('a[href$="' + controller + '/' + action + '" i]');
+        control = control.parent();
+        while (control[0].tagName != 'SECTION') {
+            control.addClass('active');
+            control = control.parent();
+        }
+    }
+</script>
+
+
+<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="~/dist/img/QCPhantom.png" class="img-rounded" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p>Bas Corpelijn</p>
+                <div class="text-xs">Active Directory</div>
+            </div>
+        </div>
+
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            @Html.Raw(new QCPhantom.Domain.Nav.Navbar().ToHtml())
+        </ul>
+
+    </section>
+    <!-- /.sidebar -->
+</aside>
