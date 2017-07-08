@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace QCAnalyser.Image.DICOM
+namespace QCAnalyser.Image.Parsers
 {
     public abstract class ImageParser
     {
@@ -29,13 +29,13 @@ namespace QCAnalyser.Image.DICOM
 
         #region "Methods"
 
-        public abstract DICOMImage Parse();
+
 
         #endregion
 
         #region "Abstract/Virtual Methods"
 
-
+        public abstract DICOMImage Parse();
 
         #endregion
 
