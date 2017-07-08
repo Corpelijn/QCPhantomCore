@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace QCAnalyser.Image.DICOM
+namespace QCAnalyser.Image.Parsers
 {
     public class PNMImageParser : ImageParser
     {
@@ -46,6 +46,8 @@ namespace QCAnalyser.Image.DICOM
             }
             if (status != total)
                 Console.Write(">");
+            else
+                Console.Write("=");
             for (int i = 0; i < 50 - bars; i++)
             {
                 Console.Write(" ");

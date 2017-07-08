@@ -1,21 +1,26 @@
 ﻿using QCAnalyser.Image;
-using QCAnalyser.Image.DICOM;
+using QCAnalyser.Image.Encoders;
+using QCAnalyser.Image.Markings;
+using QCAnalyser.Image.Parsers;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading;
 
 namespace TestApplication
 {
     class Program
     {
+        const string filename = @"J:\LZR QCPhantom\DICOMOBJ\DICOMOBJ\k310062016_2.dcm";
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Start parsing image data");
+            Console.WriteLine("Read DICOM image file");
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            ImageParser parser = new PNMImageParser(@"J:\LZR QCPhantom\DICOMOBJ\DICOMOBJ\image5.dcm.pnm");
+            ImageParser parser = new DICOMParser(filename);
             DICOMImage image = parser.Parse();
 
             sw.Stop();
@@ -23,13 +28,18 @@ namespace TestApplication
             Console.WriteLine("\n" + sw.ElapsedMilliseconds + " ms");
 
             sw.Reset();
+
+            Console.WriteLine("Writing output image");
+
             sw.Start();
 
-            //image.WritePng(@"J:\LZR QCPhantom\DICOMOBJ\DICOMOBJ\image5.dcm.png");
-            image.WriteBmp(@"J:\LZR QCPhantom\DICOMOBJ\DICOMOBJ\image5.dcm.bmp");
+            image.AddMarking(new CircleMarking(Color.FromArgb(255, 0, 0), new Point(100, 100), 30));
+            image.SaveImage(filename, ImageFormat.PNG);
+
             sw.Stop();
 
             Console.WriteLine("\n" + sw.ElapsedMilliseconds + " ms");
+            Console.WriteLine("Done!");
 
             Console.ReadKey();
         }
