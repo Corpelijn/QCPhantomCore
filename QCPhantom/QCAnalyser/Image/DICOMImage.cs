@@ -40,12 +40,26 @@ namespace QCAnalyser.Image
 
         #region "Properties"
 
+        /// <summary>
+        /// Gets the width of the image (Read-only)
+        /// </summary>
+        public int Width
+        {
+            get { return width; }
+        }
 
+        /// <summary>
+        /// Gets the height of the image (Read-only)
+        /// </summary>
+        public int Height
+        {
+            get { return height; }
+        }
 
         #endregion
 
         #region "Methods"
-        
+
         /// <summary>
         /// Gets a pixel from the image a the given position
         /// </summary>

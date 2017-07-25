@@ -6,4 +6,8 @@
     <AssemblyName>PIX13</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QCAnalyser\QCAnalyser.csproj" />
+  </ItemGroup>
+
 </Project>

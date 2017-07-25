@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PIX-13\PIX-13.csproj" />
     <ProjectReference Include="..\QCAnalyser\QCAnalyser.csproj" />
   </ItemGroup>
 
