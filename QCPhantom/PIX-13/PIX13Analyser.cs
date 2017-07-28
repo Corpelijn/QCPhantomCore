@@ -90,6 +90,12 @@ namespace PIX13
             return ret_val;
         }
 
+        /// <summary>
+        /// Gets a line from the start position in the specified direction (with steps) and returns the pixel values at the analysed points
+        /// </summary>
+        /// <param name="start">The start position of te line</param>
+        /// <param name="direction">The stepsize/direction for each pixel to analyse on the line</param>
+        /// <returns>Returns an array with pixel values found on the line from the start position in the specified direction</returns>
         private ushort[] GetDottedLine(Point start, Point direction)
         {
             List<ushort> line = new List<ushort>();
@@ -104,6 +110,11 @@ namespace PIX13
             return line.ToArray();
         }
 
+        /// <summary>
+        /// Measures the differences between each point on the line and marks them if they have a big difference (10%) with the previous point
+        /// </summary>
+        /// <param name="data">An array of pixel data to measure the differences on in linear order</param>
+        /// <returns>Returns an array of booleans containing information of high differences</returns>
         private bool[] MeasureDifferences(ushort[] data)
         {
             ushort diffTenth = (ushort)((data.Max() - data.Min()) / 10);
@@ -117,6 +128,12 @@ namespace PIX13
             return newData;
         }
 
+        /// <summary>
+        /// Checks if there are any possible locations for the contrast blocks. If found it returns the pixels locations on the given line.
+        /// </summary>
+        /// <param name="direction">The direction from the given start positions to search in</param>
+        /// <param name="startPositions">The start positions for the lines to search on</param>
+        /// <returns>An array of pixel positions on the line where the contrast blocks could be</returns>
         private int[] FindPossibleContrastLocations(Point direction, params Point[] startPositions)
         {
             if (startPositions.Length < 2)
@@ -128,8 +145,18 @@ namespace PIX13
             bool[] diffFirstLine = MeasureDifferences(firstLine);
             bool[] diffSecondLine = MeasureDifferences(secondLine);
 
-            int[] flIndexes = diffFirstLine.Select((b, i) => b.Equals(true) ? i : -1).Where(i => i != -1).ToArray();
-            int[] slIndexes = diffSecondLine.Select((b, i) => b.Equals(true) ? i : -1).Where(i => i != -1).ToArray();
+            int[] flIndexes = diffFirstLine.Select((b, i) => b.Equals(true) ? i + 1 : -1).Where(i => i != -1).ToArray();
+            int[] slIndexes = diffSecondLine.Select((b, i) => b.Equals(true) ? i + 1 : -1).Where(i => i != -1).ToArray();
+
+            for (int i = 0; i < flIndexes.Length; i++)
+            {
+                this.image.AddMarking(new CircleMarking(Color.FromArgb(0, 255, 0), new Point(startPositions[0].X, startPositions[0].Y + flIndexes[i] * direction.Y), 10));
+            }
+
+            for (int i = 0; i < slIndexes.Length; i++)
+            {
+                this.image.AddMarking(new CircleMarking(Color.FromArgb(0, 255, 0), new Point(startPositions[1].X, startPositions[1].Y + slIndexes[i] * direction.Y), 10));
+            }
 
             return null;
         }
