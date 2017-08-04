@@ -129,6 +129,18 @@ namespace PIX13
         }
 
         /// <summary>
+        /// Converts the index from a dotted scan line to an absolute pixel
+        /// </summary>
+        /// <param name="index">The index of the pixel on the dotted scan line</param>
+        /// <param name="start"></param>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        private Point GetAbsolutePixel(int index, Point start, Point direction)
+        {
+            return start.Add(direction, index);
+        }
+
+        /// <summary>
         /// Checks if there are any possible locations for the contrast blocks. If found it returns the pixels locations on the given line.
         /// </summary>
         /// <param name="direction">The direction from the given start positions to search in</param>
@@ -139,23 +151,52 @@ namespace PIX13
             if (startPositions.Length < 2)
                 return null;
 
+            // Run a "scan"-line from the start positions into the given direction
             ushort[] firstLine = GetDottedLine(startPositions[0], direction);
             ushort[] secondLine = GetDottedLine(startPositions[1], direction);
 
+            // Check the differences between the dots. If the difference is bigger than 10% set the boolean to true
             bool[] diffFirstLine = MeasureDifferences(firstLine);
             bool[] diffSecondLine = MeasureDifferences(secondLine);
 
+            // Get the indexes of the positions that have a difference of more then 10 percent
             int[] flIndexes = diffFirstLine.Select((b, i) => b.Equals(true) ? i + 1 : -1).Where(i => i != -1).ToArray();
             int[] slIndexes = diffSecondLine.Select((b, i) => b.Equals(true) ? i + 1 : -1).Where(i => i != -1).ToArray();
 
+            // Merge ajecent indexes to one and store them as absolute pixels
+            List<Point> flAbsPoints = new List<Point>();
             for (int i = 0; i < flIndexes.Length; i++)
             {
-                this.image.AddMarking(new CircleMarking(Color.FromArgb(0, 255, 0), new Point(startPositions[0].X, startPositions[0].Y + flIndexes[i] * direction.Y), 10));
+                if (flIndexes.Length != i + 1 && flIndexes[i] + 1 == flIndexes[i + 1])
+                {
+                    int endIndex = 0;
+                    for (int j = i + 1; j < flIndexes.Length; j++)
+                    {
+                        if (flIndexes[j - 1] + 1 != flIndexes[j])
+                        {
+                            endIndex = j - 1;
+                            break;
+                        }
+                    }
+
+                    Point a = GetAbsolutePixel(flIndexes[i], startPositions[0], direction);
+                    Point b = GetAbsolutePixel(flIndexes[endIndex], startPositions[0], direction);
+
+                    flAbsPoints.Add(new Point((b.X + a.X) / 2, (b.Y + a.Y) / 2));
+                    i = endIndex;
+                }
+                else
+                    flAbsPoints.Add(GetAbsolutePixel(flIndexes[i], startPositions[0], direction));
             }
 
-            for (int i = 0; i < slIndexes.Length; i++)
+            // Make the amount of found points an even number (by merging 2 points to a single center)
+            List<Point> flPoints = new List<Point>();
+            for (int i = 0; i < flAbsPoints.Count; i += 2)
             {
-                this.image.AddMarking(new CircleMarking(Color.FromArgb(0, 255, 0), new Point(startPositions[1].X, startPositions[1].Y + slIndexes[i] * direction.Y), 10));
+                if (i + 1 != flAbsPoints.Count)
+                {
+                    flPoints.Add(new Point((flAbsPoints[i].X + flAbsPoints[i + 1].X) / 2, (flAbsPoints[i].Y + flAbsPoints[i + 1].Y) / 2));
+                }
             }
 
             return null;
