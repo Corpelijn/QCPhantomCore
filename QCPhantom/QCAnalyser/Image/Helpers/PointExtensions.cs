@@ -11,5 +11,10 @@ namespace QCAnalyser.Image.Helpers
         {
             return new Point(p.X + add.X, p.Y + add.Y);
         }
+
+        public static Point Add(this Point p, Point add, int index)
+        {
+            return new Point(p.X + add.X * index, p.Y + add.Y * index);
+        }
     }
 }

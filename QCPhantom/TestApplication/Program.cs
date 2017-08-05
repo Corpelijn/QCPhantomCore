@@ -13,7 +13,7 @@ namespace TestApplication
 {
     class Program
     {
-        const string filename = @"J:\LZR QCPhantom\DICOMOBJ\DICOMOBJ\image5.dcm";
+        const string filename = @"P:\DICOMOBJ\00000001.dcm";
 
         static void Main(string[] args)
         {

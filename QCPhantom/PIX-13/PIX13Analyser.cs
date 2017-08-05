@@ -90,6 +90,12 @@ namespace PIX13
             return ret_val;
         }
 
+        /// <summary>
+        /// Gets a line from the start position in the specified direction (with steps) and returns the pixel values at the analysed points
+        /// </summary>
+        /// <param name="start">The start position of te line</param>
+        /// <param name="direction">The stepsize/direction for each pixel to analyse on the line</param>
+        /// <returns>Returns an array with pixel values found on the line from the start position in the specified direction</returns>
         private ushort[] GetDottedLine(Point start, Point direction)
         {
             List<ushort> line = new List<ushort>();
@@ -104,6 +110,11 @@ namespace PIX13
             return line.ToArray();
         }
 
+        /// <summary>
+        /// Measures the differences between each point on the line and marks them if they have a big difference (10%) with the previous point
+        /// </summary>
+        /// <param name="data">An array of pixel data to measure the differences on in linear order</param>
+        /// <returns>Returns an array of booleans containing information of high differences</returns>
         private bool[] MeasureDifferences(ushort[] data)
         {
             ushort diffTenth = (ushort)((data.Max() - data.Min()) / 10);
@@ -117,19 +128,76 @@ namespace PIX13
             return newData;
         }
 
+        /// <summary>
+        /// Converts the index from a dotted scan line to an absolute pixel
+        /// </summary>
+        /// <param name="index">The index of the pixel on the dotted scan line</param>
+        /// <param name="start"></param>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        private Point GetAbsolutePixel(int index, Point start, Point direction)
+        {
+            return start.Add(direction, index);
+        }
+
+        /// <summary>
+        /// Checks if there are any possible locations for the contrast blocks. If found it returns the pixels locations on the given line.
+        /// </summary>
+        /// <param name="direction">The direction from the given start positions to search in</param>
+        /// <param name="startPositions">The start positions for the lines to search on</param>
+        /// <returns>An array of pixel positions on the line where the contrast blocks could be</returns>
         private int[] FindPossibleContrastLocations(Point direction, params Point[] startPositions)
         {
             if (startPositions.Length < 2)
                 return null;
 
+            // Run a "scan"-line from the start positions into the given direction
             ushort[] firstLine = GetDottedLine(startPositions[0], direction);
             ushort[] secondLine = GetDottedLine(startPositions[1], direction);
 
+            // Check the differences between the dots. If the difference is bigger than 10% set the boolean to true
             bool[] diffFirstLine = MeasureDifferences(firstLine);
             bool[] diffSecondLine = MeasureDifferences(secondLine);
 
-            int[] flIndexes = diffFirstLine.Select((b, i) => b.Equals(true) ? i : -1).Where(i => i != -1).ToArray();
-            int[] slIndexes = diffSecondLine.Select((b, i) => b.Equals(true) ? i : -1).Where(i => i != -1).ToArray();
+            // Get the indexes of the positions that have a difference of more then 10 percent
+            int[] flIndexes = diffFirstLine.Select((b, i) => b.Equals(true) ? i + 1 : -1).Where(i => i != -1).ToArray();
+            int[] slIndexes = diffSecondLine.Select((b, i) => b.Equals(true) ? i + 1 : -1).Where(i => i != -1).ToArray();
+
+            // Merge ajecent indexes to one and store them as absolute pixels
+            List<Point> flAbsPoints = new List<Point>();
+            for (int i = 0; i < flIndexes.Length; i++)
+            {
+                if (flIndexes.Length != i + 1 && flIndexes[i] + 1 == flIndexes[i + 1])
+                {
+                    int endIndex = 0;
+                    for (int j = i + 1; j < flIndexes.Length; j++)
+                    {
+                        if (flIndexes[j - 1] + 1 != flIndexes[j])
+                        {
+                            endIndex = j - 1;
+                            break;
+                        }
+                    }
+
+                    Point a = GetAbsolutePixel(flIndexes[i], startPositions[0], direction);
+                    Point b = GetAbsolutePixel(flIndexes[endIndex], startPositions[0], direction);
+
+                    flAbsPoints.Add(new Point((b.X + a.X) / 2, (b.Y + a.Y) / 2));
+                    i = endIndex;
+                }
+                else
+                    flAbsPoints.Add(GetAbsolutePixel(flIndexes[i], startPositions[0], direction));
+            }
+
+            // Make the amount of found points an even number (by merging 2 points to a single center)
+            List<Point> flPoints = new List<Point>();
+            for (int i = 0; i < flAbsPoints.Count; i += 2)
+            {
+                if (i + 1 != flAbsPoints.Count)
+                {
+                    flPoints.Add(new Point((flAbsPoints[i].X + flAbsPoints[i + 1].X) / 2, (flAbsPoints[i].Y + flAbsPoints[i + 1].Y) / 2));
+                }
+            }
 
             return null;
         }
