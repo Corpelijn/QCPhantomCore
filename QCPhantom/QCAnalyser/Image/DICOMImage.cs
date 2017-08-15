@@ -72,6 +72,16 @@ namespace QCAnalyser.Image
         }
 
         /// <summary>
+        /// Gets a pixel from the image at the given position
+        /// </summary>
+        /// <param name="p">A point object containing the position of the pixel</param>
+        /// <returns>The values opf the pixel at the given position</returns>
+        public ushort GetPixel(Point p)
+        {
+            return GetPixel(p.X, p.Y);
+        }
+
+        /// <summary>
         /// Sets a pixel in the image at the given position
         /// </summary>
         /// <param name="x">The x coordinate of the pixel</param>
