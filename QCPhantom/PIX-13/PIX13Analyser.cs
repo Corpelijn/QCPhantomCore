@@ -193,6 +193,11 @@ namespace PIX13
                 }
             }
 
+            for (int i = 0; i < absolutePoints.Count; i++)
+            {
+                image.AddMarking(new CircleMarking(Color.FromArgb(255, 0, 0), absolutePoints[i], 15));
+            }
+
             return possiblePoints.ToArray();
         }
 
@@ -203,7 +208,7 @@ namespace PIX13
             stepSize = stepSize < 1 ? 1 : stepSize;
 
             // Read some pixelData to find "dips" (possibly the contrastblocks)
-            FindPossibleContrastLocations(new Point(0, -stepSize), new Point((int)(image.Width * 0.05f), 0));
+            FindPossibleContrastLocations(new Point(0, -stepSize), Center.Add(new Point((int)(image.Width * 0.1f), 0)));
             //FindPossibleContrastLocations(new Point(0, -stepSize),
             //                    Center.Add(new Point((int)(image.Width * 0.1f), 0)),
             //                    Center.Add(new Point((int)(image.Width * -0.1f), 0))
