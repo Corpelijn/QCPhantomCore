@@ -5,34 +5,29 @@
 
 <script>
     $(document).ready(function () {
-        showLoadingAnimation(true);
-        $('.foldable-table-row').click(function () {
-            var icon = $(this).find('.row-icon');
-            if (icon.hasClass('row-closed')) {
-                icon.removeClass('fa-plus-square');
-                icon.removeClass('row-closed');
-                icon.addClass('fa-minus-square');
-                icon.addClass('row-opened');
-
-                var contentId = $(this).attr('row-id');
-                $('tr[content-row-id$="' + contentId + '"]').removeClass('hidden');
-            } else {
-                icon.removeClass('fa-minus-square');
-                icon.removeClass('row-opened');
-                icon.addClass('fa-plus-square');
-                icon.addClass('row-closed');
-
-                var contentId = $(this).attr('row-id');
-                $('tr[content-row-id$="' + contentId + '"]').addClass('hidden');
-            }
-        });
+        reloadStudies('/Results/FilterResults?' + buildFilter());
     });
 
-    $(document).ready(function () {
-        $('#renew-btn').click(function () { 
-            reloadStudies();
-        });
-     });
+    function expandOrCollapseStudy() {
+        var icon = $(this).find('.row-icon');
+        if (icon.hasClass('row-closed')) {
+            icon.removeClass('fa-plus-square');
+            icon.removeClass('row-closed');
+            icon.addClass('fa-minus-square');
+            icon.addClass('row-opened');
+
+            var contentId = $(this).attr('row-id');
+            $('tr[content-row-id$="' + contentId + '"]').removeClass('hidden');
+        } else {
+            icon.removeClass('fa-minus-square');
+            icon.removeClass('row-opened');
+            icon.addClass('fa-plus-square');
+            icon.addClass('row-closed');
+
+            var contentId = $(this).attr('row-id');
+            $('tr[content-row-id$="' + contentId + '"]').addClass('hidden');
+        }
+    }
 
     function showLoadingAnimation(display) {
         if (display)
@@ -42,22 +37,25 @@
     }
 
     function buildFilter() {
-        return 'orderby=analysedate&orderdirection=asc';
+        return 'orderby=analysedate&orderdirection=asc&index=0&length=1';
     }
 
-    function reloadStudies() {
-        clearTable();
-        var filter = buildFilter();
-
-        console.log('test');
-
+    function loadStudies(url) {
+        showLoadingAnimation(true);
         $.ajax({
             type: 'GET',
-            url: '/Results/FilterResults?' + filter,
+            url: url,
             contentType: "application/json",
             dataType: 'json',
             success: function (json) {
                 console.log(json);
+                parseStudyData(json.studies);
+
+                if (json.data.url != '') {
+                    loadStudies(json.data.url);
+                } else {
+                    showLoadingAnimation(false);
+                }
             },
             error: function (e) {
                 console.log("jQuery error message = " + e.message);
@@ -65,8 +63,67 @@
         });
     }
 
-    function clearTable() {
+    function reloadStudies(url) {
+        showLoadingAnimation(true);
+        clearStudiesTable();
+
+        loadStudies(url);
+    }
+
+    function clearStudiesTable() {
         $('#result-table-body').empty();
+    }
+
+    function parseStudyData(data) {
+        for (var i = 0; i < data.length; i++) {
+            addStudy(data[i]);
+        }
+    }
+
+    function addStudy(data) {
+        var studyRow = $('#foldable-table-row-prefab').clone();
+        studyRow.attr('id', '');
+        studyRow.attr('row-id', data.id);
+
+        var children = studyRow.children();
+        console.log(data);
+        var date = new Date(data.studyDate);
+        children[1].innerText = date.toDateString() + ' ' + date.toLocaleTimeString();
+        children[2].innerText = data.pacsAccession;
+        children[3].innerText = data.studyUID;
+        children[4].innerText = data.machines[0].publicName;
+        children[5].innerText = data.detectors[0].publicName;
+        studyRow.click(expandOrCollapseStudy);
+
+        $('#result-table-body').append(studyRow);
+
+        var imageRow = $('#content-row-prefab').clone();
+        imageRow.attr('content-row-id', data.id);
+        imageRow.attr('id', '');
+
+        var images = data.images;
+        var currentTable = imageRow.find('#image-content-prefab');
+        for (var i = 0; i < images.length; i++) {
+            addImage(data.id, images[i], currentTable);
+        }
+
+        $('#result-table-body').append(imageRow);
+    }
+
+    function addImage(rowId, data, table) {
+        var imageRow = $('#content-subrow-prefab').clone();
+
+        imageRow.attr('id', '');
+
+        var children = imageRow.children();
+        children[0].innerText = data.imageUID;
+        var date = new Date(data.analyseTime);
+        children[1].innerText = date.toDateString() + ' ' + date.toLocaleTimeString();
+        children[2].innerText = data.state;
+        children[3].innerText = data.machine.publicName;
+        children[4].innerText = data.detector.publicName;
+
+        table.append(imageRow);
     }
 
 </script>
@@ -85,88 +142,19 @@
     </div>
 </div>
 
-<div class="col-md-12">
+<div class="col-md-12 col-xs-6">
     <div class="row">
         <table class="table table-hover table-striped">
             <tr>
                 <th width="2%"></th>
-                <th>Datum en tijd</th>
-                <th>PACS assession</th>
+                <th>Date and time</th>
+                <th>PACS accession</th>
                 <th>Study instance UID</th>
                 <th>Machine(s)</th>
                 <th>Detector(s)</th>
             </tr>
 
-            <tbody id="result-table-body">
-                @for (int i = 0; i < 5; i++)
-            {
-                    <tr class="foldable-table-row" row-id="@i">
-                        <td>
-                            <!-- Display the plus/minus icon on the left of each row -->
-                            <i class="fa fa-plus-square row-icon text-blue row-closed"></i>
-                        </td>
-                        <td>
-                            <!-- Display the date and time values -->
-                            17 juni 2017 17:48
-                        </td>
-                        <td>
-                            <!-- Display the PACS accession number -->
-                            51234854
-                        </td>
-                        <td>
-                            <!-- Display the Instance UID of the Study -->
-                            9234.9834.9849283.03498059348502.456
-                        </td>
-                        <td>
-                            <!-- Display the machine information -->
-                            QC light kamer 5
-                        </td>
-                        <td>
-                            <!-- Display the amount of images in the study -->
-                            Detector 3
-                        </td>
-                    </tr>
-                    <tr class="hidden content-row" content-row-id="@i">
-                        <td></td>
-                        <td colspan="5">
-                            <table class="table">
-                                <tr>
-                                    <th>Image UID</th>
-                                    <th>Status</th>
-                                    <th>Machine</th>
-                                    <th>Detector</th>
-                                    <th>Acties</th>
-                                </tr>
-                                @for (int j = 0; j < 3; j++)
-                                {
-                                    <tr>
-                                        <td>
-                                            <!-- Display the date and time values -->
-                                            9234.9834.9849283.03498059348502.456
-                                        </td>
-                                        <td>
-                                            <!-- Display the PACS accession number -->
-                                            In Orde
-                                        </td>
-                                        <td>
-                                            <!-- Display the Instance UID of the Study -->
-                                            QC light Kamer 5
-                                        </td>
-                                        <td>
-                                            <!-- Display the machine information -->
-                                            Detector 4
-                                        </td>
-                                        <td>
-                                            <!-- Display the amount of images in the study -->
-                                            <button class="btn btn-success btn-xs">Openen</button>
-                                        </td>
-                                    </tr>
-                                }
-                            </table>
-                        </td>
-                    </tr>
-                }
-            </tbody>
+            <tbody id="result-table-body"></tbody>
         </table>
     </div>
 
@@ -183,8 +171,67 @@
             </font>
         </center>
     </div>
+</div>
 
-    <div class="row">
-        <button class="btn btn-primary" id="renew-btn">Renew</button>
-    </div>
+<div class="hidden">
+    <table>
+        <tr class="foldable-table-row" row-id="" id="foldable-table-row-prefab">
+            <td>
+                <!-- Display the plus/minus icon on the left of each row -->
+                <i class="fa fa-plus-square row-icon text-blue row-closed"></i>
+            </td>
+            <td>
+                <!-- Display the date and time values -->
+            </td>
+            <td>
+                <!-- Display the PACS accession number -->
+            </td>
+            <td>
+                <!-- Display the Instance UID of the Study -->
+            </td>
+            <td>
+                <!-- Display the machine information -->
+            </td>
+            <td>
+                <!-- Display the amount of images in the study -->
+            </td>
+        </tr>
+        <tr class="hidden content-row" content-row-id="" id="content-row-prefab">
+            <td></td>
+            <td colspan="5">
+                <table class="table" id="image-content-prefab">
+                    <tr>
+                        <th>Image UID</th>
+                        <th>Analyse date and time</th>
+                        <th>Status</th>
+                        <th>Machine</th>
+                        <th>Detector</th>
+                        <th>Acties</th>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr class="content-subrow" id="content-subrow-prefab">
+            <td>
+                <!-- Display the Image UID of the image (SOP Instance) -->
+            </td>
+            <td>
+                <!-- Display the date and time of the analyses -->
+            </td>
+            <td>
+                <!-- Display the image status -->
+            </td>
+            <td>
+                <!-- Display the machine the image was taken on -->
+            </td>
+            <td>
+                <!-- Display the detector the image was taken on -->
+            </td>
+            <td>
+                <!-- The button to open the image details -->
+                <button class="btn btn-success btn-xs">Openen</button>
+            </td>
+        </tr>
+    </table>
 </div>
