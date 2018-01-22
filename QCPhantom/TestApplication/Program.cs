@@ -1,13 +1,10 @@
 ﻿using PIX13;
 using QCAnalyser;
-using QCAnalyser.Image;
-using QCAnalyser.Image.Encoders;
-using QCAnalyser.Image.Images;
-using QCAnalyser.Image.Markings;
-using QCAnalyser.Image.Parsers;
+using QCAnalyser.Imaging;
+using QCAnalyser.Imaging.Encoders;
+using QCAnalyser.Imaging.Parsers;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Threading;
 
 namespace TestApplication
@@ -24,7 +21,7 @@ namespace TestApplication
             sw.Start();
 
             ImageParser parser = new DICOMParser(filename);
-            DICOMImage image = parser.Parse();
+            Image image = parser.Parse();
 
             sw.Stop();
 
@@ -51,7 +48,7 @@ namespace TestApplication
             sw.Start();
 
             //image.AddMarking(new CircleMarking(Color.FromArgb(255, 0, 0), new Point(100, 100), 30));
-            image.SaveImage(filename, ImageFormat.PNG);
+            image.SaveToFile(filename, ImageFormat.PNG);
 
             sw.Stop();
 
