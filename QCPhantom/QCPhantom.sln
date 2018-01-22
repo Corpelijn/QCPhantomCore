@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QCPhantom", "QCPhantom\QCPhantom.csproj", "{6DBADC8F-8D0B-4612-9A7E-86E2094ACAF9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIX-13", "PIX-13\PIX-13.csproj", "{B53F92A2-806D-4A4A-8D28-E82F3B1372CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QCAnalyser", "QCAnalyser\QCAnalyser.csproj", "{E9824E86-35A2-46F5-8532-7E93848FAF4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QCAnalyser", "QCAnalyser\QCAnalyser.csproj", "{E9824E86-35A2-46F5-8532-7E93848FAF4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "TestApplication\TestApplication.csproj", "{346A4015-9EC2-4884-8663-4D94D846161E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApplication", "TestApplication\TestApplication.csproj", "{346A4015-9EC2-4884-8663-4D94D846161E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -40,12 +40,26 @@ namespace QCAnalyser.Image
 
         #region "Properties"
 
+        /// <summary>
+        /// Gets the width of the image (Read-only)
+        /// </summary>
+        public int Width
+        {
+            get { return width; }
+        }
 
+        /// <summary>
+        /// Gets the height of the image (Read-only)
+        /// </summary>
+        public int Height
+        {
+            get { return height; }
+        }
 
         #endregion
 
         #region "Methods"
-        
+
         /// <summary>
         /// Gets a pixel from the image a the given position
         /// </summary>
@@ -55,6 +69,16 @@ namespace QCAnalyser.Image
         public ushort GetPixel(int x, int y)
         {
             return pixels[y * width + x];
+        }
+
+        /// <summary>
+        /// Gets a pixel from the image at the given position
+        /// </summary>
+        /// <param name="p">A point object containing the position of the pixel</param>
+        /// <returns>The values opf the pixel at the given position</returns>
+        public ushort GetPixel(Point p)
+        {
+            return GetPixel(p.X, p.Y);
         }
 
         /// <summary>

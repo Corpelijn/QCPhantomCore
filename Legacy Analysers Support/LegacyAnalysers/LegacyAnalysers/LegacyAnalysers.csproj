@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="OldAnalyser">
+      <HintPath>..\..\..\..\..\TFS\QCPhantom\QCPhantom\QCAnalyser\bin\Debug\QCAnalyser.dll</HintPath>
+	  <Aliases>OldAnalyser</Aliases>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -79,9 +79,10 @@ namespace QCAnalyser.Image.Encoders
         {
             foreach(ImageMarking marking in markings)
             {
-                for (int i = 0; i < marking.Pixels.Length; i++)
+                Point[] pixels = marking.Pixels.Where(x => x.X >= 0 && x.X <= width && x.Y >= 0 && x.Y <= height).ToArray();
+                for (int i = 0; i < pixels.Length; i++)
                 {
-                    pixels[marking.Pixels[i].Y * width + marking.Pixels[i].X] = marking.Color;
+                    this.pixels[pixels[i].Y * width + pixels[i].X] = marking.Color;
                 }
             }
         }
