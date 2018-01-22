@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QCAnalyser.Image.Pixels;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -85,8 +86,8 @@ namespace QCAnalyser.Image.Encoders
             int current = 0;
             while (currentIndex >= 0)
             {
-                Color[] row = Subset(pixels, currentIndex, currentIndex + width);
-                foreach (Color pixel in row)
+                Pixel[] row = Subset(pixels, currentIndex, currentIndex + width);
+                foreach (Pixel pixel in row)
                 {
                     stream.WriteByte(pixel.B);
                     stream.WriteByte(pixel.G);

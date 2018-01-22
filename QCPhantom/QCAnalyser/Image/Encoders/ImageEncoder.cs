@@ -1,4 +1,5 @@
 ﻿using QCAnalyser.Image.Markings;
+using QCAnalyser.Image.Pixels;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,7 +16,7 @@ namespace QCAnalyser.Image.Encoders
         protected string filename;
         protected int width;
         protected int height;
-        protected Color[] pixels;
+        protected Pixel[] pixels;
         ImageMarking[] markings;
 
         #endregion
@@ -43,13 +44,13 @@ namespace QCAnalyser.Image.Encoders
 
         private void ParsePixels(ushort[] pixels)
         {
-            this.pixels = new Color[pixels.Length];
+            this.pixels = new Pixel[pixels.Length];
 
             for (int i = 0; i < pixels.Length; i++)
             {
-                byte b = (byte)(255f / 65535f * pixels[i]);
+                //byte b = (byte)(255f / 65535f * pixels[i]);
 
-                this.pixels[i] = Color.FromArgb(b, b, b);
+                this.pixels[i] = new DICOMPixel(pixels[i]); // Color.FromArgb(b, b, b);
             }
         }
 
@@ -79,9 +80,10 @@ namespace QCAnalyser.Image.Encoders
         {
             foreach(ImageMarking marking in markings)
             {
-                for (int i = 0; i < marking.Pixels.Length; i++)
+                Point[] pixels = marking.Pixels.Where(x => x.X >= 0 && x.X <= width && x.Y >= 0 && x.Y <= height).ToArray();
+                for (int i = 0; i < pixels.Length; i++)
                 {
-                    pixels[marking.Pixels[i].Y * width + marking.Pixels[i].X] = marking.Color;
+                    this.pixels[pixels[i].Y * width + pixels[i].X] = marking.Color;
                 }
             }
         }

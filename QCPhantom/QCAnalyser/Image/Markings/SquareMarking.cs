@@ -1,4 +1,5 @@
 ﻿using QCAnalyser.Image.Helpers;
+using QCAnalyser.Image.Pixels;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +18,7 @@ namespace QCAnalyser.Image.Markings
 
         #region "Constructors"
 
-        public SquareMarking(Color color, Point center, int size, bool drawCenter = true, bool fill = false) : base(color)
+        public SquareMarking(Pixel color, Point center, int size, bool drawCenter = true, bool fill = false) : base(color)
         {
             GetPixels(center, size, drawCenter, fill);
         }

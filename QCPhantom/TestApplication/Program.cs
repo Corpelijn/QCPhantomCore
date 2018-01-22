@@ -1,5 +1,8 @@
-﻿using QCAnalyser.Image;
+﻿using PIX13;
+using QCAnalyser;
+using QCAnalyser.Image;
 using QCAnalyser.Image.Encoders;
+using QCAnalyser.Image.Images;
 using QCAnalyser.Image.Markings;
 using QCAnalyser.Image.Parsers;
 using System;
@@ -11,7 +14,7 @@ namespace TestApplication
 {
     class Program
     {
-        const string filename = @"J:\LZR QCPhantom\DICOMOBJ\DICOMOBJ\k310062016_2.dcm";
+        const string filename = @"..\TestData\00000001.dcm";
 
         static void Main(string[] args)
         {
@@ -29,11 +32,25 @@ namespace TestApplication
 
             sw.Reset();
 
+            Console.WriteLine("Start Phantom detection");
+
+            sw.Start();
+
+            ImageAnalyser analyser = new PIX13Analyser(image);
+            analyser.AnalyseImage();
+            //analyser.IsCorrectPhantom();
+
+            sw.Stop();
+
+            Console.WriteLine(sw.ElapsedMilliseconds + " ms");
+
+            sw.Reset();
+
             Console.WriteLine("Writing output image");
 
             sw.Start();
 
-            image.AddMarking(new CircleMarking(Color.FromArgb(255, 0, 0), new Point(100, 100), 30));
+            //image.AddMarking(new CircleMarking(Color.FromArgb(255, 0, 0), new Point(100, 100), 30));
             image.SaveImage(filename, ImageFormat.PNG);
 
             sw.Stop();

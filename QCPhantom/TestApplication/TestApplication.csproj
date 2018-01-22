@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PIX-13\PIX-13.csproj" />
     <ProjectReference Include="..\QCAnalyser\QCAnalyser.csproj" />
   </ItemGroup>
 

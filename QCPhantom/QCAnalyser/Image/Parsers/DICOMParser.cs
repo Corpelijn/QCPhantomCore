@@ -1,6 +1,7 @@
 ﻿using Dicom;
 using Dicom.Imaging;
 using Dicom.Imaging.Render;
+using QCAnalyser.Image.Images;
 using System;
 using System.Collections.Generic;
 using System.Text;
