@@ -14,7 +14,7 @@ namespace TestApplication
 {
     class Program
     {
-        const string filename = @"./../../Test Data/000001.dcm";
+        const string filename = @"..\TestData\00000001.dcm";
 
         static void Main(string[] args)
         {

@@ -149,25 +149,19 @@ namespace PIX13
         /// <param name="direction">The direction from the given start positions to search in</param>
         /// <param name="startPositions">The start positions for the lines to search on</param>
         /// <returns>An array of pixel positions on the line where the contrast blocks could be</returns>
-        private int[] FindPossibleContrastLocations(Point direction, params Point[] startPositions)
+        private Point[] FindPossibleContrastLocations(Point direction, Point startPosition)
         {
-            if (startPositions.Length < 2)
-                return null;
-
             // Run a "scan"-line from the start positions into the given direction
-            ushort[] firstLine = GetDottedLine(startPositions[0], direction);
-            ushort[] secondLine = GetDottedLine(startPositions[1], direction);
+            ushort[] dottedLineValues = GetDottedLine(startPosition, direction);
 
             // Check the differences between the dots. If the difference is bigger than 10% set the boolean to true
-            bool[] diffFirstLine = MeasureDifferences(firstLine);
-            bool[] diffSecondLine = MeasureDifferences(secondLine);
+            bool[] lineDifferences = MeasureDifferences(dottedLineValues);
 
             // Get the indexes of the positions that have a difference of more then 10 percent
-            int[] flIndexes = diffFirstLine.Select((b, i) => b.Equals(true) ? i + 1 : -1).Where(i => i != -1).ToArray();
-            int[] slIndexes = diffSecondLine.Select((b, i) => b.Equals(true) ? i + 1 : -1).Where(i => i != -1).ToArray();
+            int[] flIndexes = lineDifferences.Select((b, i) => b.Equals(true) ? i + 1 : -1).Where(i => i != -1).ToArray();
 
             // Merge ajecent indexes to one and store them as absolute pixels
-            List<Point> flAbsPoints = new List<Point>();
+            List<Point> absolutePoints = new List<Point>();
             for (int i = 0; i < flIndexes.Length; i++)
             {
                 if (flIndexes.Length != i + 1 && flIndexes[i] + 1 == flIndexes[i + 1])
@@ -182,27 +176,32 @@ namespace PIX13
                         }
                     }
 
-                    Point a = GetAbsolutePixel(flIndexes[i], startPositions[0], direction);
-                    Point b = GetAbsolutePixel(flIndexes[endIndex], startPositions[0], direction);
+                    Point a = GetAbsolutePixel(flIndexes[i], startPosition, direction);
+                    Point b = GetAbsolutePixel(flIndexes[endIndex], startPosition, direction);
 
-                    flAbsPoints.Add(new Point((b.X + a.X) / 2, (b.Y + a.Y) / 2));
+                    absolutePoints.Add(new Point((b.X + a.X) / 2, (b.Y + a.Y) / 2));
                     i = endIndex;
                 }
                 else
-                    flAbsPoints.Add(GetAbsolutePixel(flIndexes[i], startPositions[0], direction));
+                    absolutePoints.Add(GetAbsolutePixel(flIndexes[i], startPosition, direction));
             }
 
             // Make the amount of found points an even number (by merging 2 points to a single center)
-            List<Point> flPoints = new List<Point>();
-            for (int i = 0; i < flAbsPoints.Count; i += 2)
+            List<Point> possiblePoints = new List<Point>();
+            for (int i = 0; i < absolutePoints.Count; i += 2)
             {
-                if (i + 1 != flAbsPoints.Count)
+                if (i + 1 != absolutePoints.Count)
                 {
-                    flPoints.Add(new Point((flAbsPoints[i].X + flAbsPoints[i + 1].X) / 2, (flAbsPoints[i].Y + flAbsPoints[i + 1].Y) / 2));
+                    possiblePoints.Add(new Point((absolutePoints[i].X + absolutePoints[i + 1].X) / 2, (absolutePoints[i].Y + absolutePoints[i + 1].Y) / 2));
                 }
             }
 
-            return null;
+            for (int i = 0; i < absolutePoints.Count; i++)
+            {
+                image.AddMarking(new CircleMarking(Color.FromArgb(255, 0, 0), absolutePoints[i], 15));
+            }
+
+            return possiblePoints.ToArray();
         }
 
         private void FindContrastBlocks()
@@ -212,10 +211,13 @@ namespace PIX13
             stepSize = stepSize < 1 ? 1 : stepSize;
 
             // Read some pixelData to find "dips" (possibly the contrastblocks)
-            FindPossibleContrastLocations(new Point(0, -stepSize),
-                                Center.Add(new Point((int)(image.Width * 0.1f), 0)),
-                                Center.Add(new Point((int)(image.Width * -0.1f), 0))
-                                );
+            FindPossibleContrastLocations(new Point(0, -stepSize), Center.Add(new Point((int)(image.Width * 0.1f), 0)));
+            //FindPossibleContrastLocations(new Point(0, -stepSize),
+            //                    Center.Add(new Point((int)(image.Width * 0.1f), 0)),
+            //                    Center.Add(new Point((int)(image.Width * -0.1f), 0))
+            //                    );
+
+             
             //ushort[] values;
             //values = GetDottedLine(Center.Add(new Point((int)(image.Width * 0.1f), 0)), new Point(0, -stepSize));
             //values = GetDottedLine(Center.Add(new Point((int)(-image.Width * 0.1f), 0)), new Point(0, -stepSize));
