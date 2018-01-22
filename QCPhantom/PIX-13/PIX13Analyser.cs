@@ -1,7 +1,10 @@
 ﻿using QCAnalyser;
 using QCAnalyser.Image;
 using QCAnalyser.Image.Helpers;
+using QCAnalyser.Image.Images;
+using QCAnalyser.Image.Kernel;
 using QCAnalyser.Image.Markings;
+using QCAnalyser.Image.Pixels;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -51,7 +54,7 @@ namespace PIX13
             {
                 Point p = GetNextPosition(currentPosition, ref bounds, stepSize, ref currentDirection);
 
-                image.AddMarking(new CircleMarking(Color.FromArgb(255, 0, 0), p, 15, true));
+                image.AddMarking(new CircleMarking(new RGBPixel(255, 0, 0), p, 15, true));
                 currentPosition = p;
             }
 
@@ -230,7 +233,17 @@ namespace PIX13
 
         public override void AnalyseImage()
         {
-            throw new NotImplementedException();
+            SobelEdgeDetection edgeDetection = new SobelEdgeDetection(image);
+            Kernel horizontalKernel = new Kernel(3, 3,
+                1, 1, 1,
+                0, 0, 0,
+                -1, -1, -1);
+            Kernel verticalKernel = new Kernel(3, 3,
+                1, 0, -1,
+                1, 0, -1,
+                1, 0, -1);
+
+            edgeDetection.ProcessImage(horizontalKernel);
         }
 
         public override bool IsCorrectPhantom()

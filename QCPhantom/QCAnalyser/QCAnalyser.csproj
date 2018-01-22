@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="fo-dicom" Version="3.0.2" />
-    <PackageReference Include="FreeImage-dotnet-core" Version="4.0.3" />
+    <PackageReference Include="FreeImage-dotnet-core" Version="4.3.6" />
   </ItemGroup>
 
 </Project>

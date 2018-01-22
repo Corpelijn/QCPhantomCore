@@ -1,4 +1,5 @@
 ﻿using QCAnalyser.Image.Helpers;
+using QCAnalyser.Image.Pixels;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +18,7 @@ namespace QCAnalyser.Image.Markings
 
         #region "Constructors"
 
-        public RectangleMarking(Color color, Point leftTop, Point leftBottom, Point rightTop, Point rightBottom, bool fill = false) : base(color)
+        public RectangleMarking(Pixel color, Point leftTop, Point leftBottom, Point rightTop, Point rightBottom, bool fill = false) : base(color)
         {
             GetPixels(leftTop, leftBottom, rightTop, rightBottom, fill);
         }

@@ -1,4 +1,5 @@
 ﻿using QCAnalyser.Image.Helpers;
+using QCAnalyser.Image.Pixels;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,7 +17,7 @@ namespace QCAnalyser.Image.Markings
 
         #region "Constructors"
 
-        public LineMarking(Color color, Point start, Point end) :base(color)
+        public LineMarking(Pixel color, Point start, Point end) :base(color)
         {
             GetPixels(start, end);
         }

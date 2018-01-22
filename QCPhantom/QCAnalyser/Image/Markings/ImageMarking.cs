@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QCAnalyser.Image.Pixels;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -10,13 +11,13 @@ namespace QCAnalyser.Image.Markings
         #region "Fields"
 
         protected Point[] pixels;
-        protected Color color;
+        protected Pixel color;
 
         #endregion
 
         #region "Constructors"
 
-        protected ImageMarking(Color color)
+        protected ImageMarking(Pixel color)
         {
             this.color = color;
         }
@@ -25,7 +26,7 @@ namespace QCAnalyser.Image.Markings
 
         #region "Properties"
 
-        public Color Color
+        public Pixel Color
         {
             get { return color; }
         }

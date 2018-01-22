@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QCAnalyser.Image.Pixels;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -15,7 +16,7 @@ namespace QCAnalyser.Image.Markings
 
         #region "Constructors"
 
-        public CircleMarking(Color color, Point center, int size, bool drawCenter = true, bool fill = false) : base(color)
+        public CircleMarking(Pixel color, Point center, int size, bool drawCenter = true, bool fill = false) : base(color)
         {
             GetPixels(center, size, drawCenter, fill);
         }

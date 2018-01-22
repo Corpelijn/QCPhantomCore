@@ -1,4 +1,5 @@
 ﻿using QCAnalyser.Image;
+using QCAnalyser.Image.Images;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -2,6 +2,7 @@
 using QCAnalyser;
 using QCAnalyser.Image;
 using QCAnalyser.Image.Encoders;
+using QCAnalyser.Image.Images;
 using QCAnalyser.Image.Markings;
 using QCAnalyser.Image.Parsers;
 using System;
@@ -13,7 +14,7 @@ namespace TestApplication
 {
     class Program
     {
-        const string filename = @"P:\DICOMOBJ\00000001.dcm";
+        const string filename = @"./../../Test Data/000001.dcm";
 
         static void Main(string[] args)
         {
@@ -36,7 +37,8 @@ namespace TestApplication
             sw.Start();
 
             ImageAnalyser analyser = new PIX13Analyser(image);
-            analyser.IsCorrectPhantom();
+            analyser.AnalyseImage();
+            //analyser.IsCorrectPhantom();
 
             sw.Stop();
 
