@@ -36,5 +36,8 @@
     <Folder Include="Views\Results\" />
     <Folder Include="wwwroot\fonts\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QCAnalyser\QCAnalyser.csproj" />
+  </ItemGroup>
 
 </Project>

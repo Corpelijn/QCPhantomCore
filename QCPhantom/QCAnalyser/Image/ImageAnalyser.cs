@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace QCAnalyser
+namespace QCAnalyser.Image
 {
     public abstract class ImageAnalyser
     {
