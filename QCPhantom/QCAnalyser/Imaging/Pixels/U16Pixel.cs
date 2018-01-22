@@ -23,11 +23,11 @@ namespace QCAnalyser.Imaging.Pixels
 
         #region "Properties"
 
-        public byte Red => 0;
+        public byte Red => (byte)(255 * Grayscale);
 
-        public byte Green => 0;
+        public byte Green => (byte)(255 * Grayscale);
 
-        public byte Blue => 0;
+        public byte Blue => (byte)(255 * Grayscale);
 
         public byte Alpha => 255;
 

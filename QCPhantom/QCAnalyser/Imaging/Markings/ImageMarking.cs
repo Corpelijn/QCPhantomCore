@@ -1,7 +1,7 @@
-﻿using QCAnalyser.Imaging.Pixels;
+﻿using QCAnalyser.Imaging.Helpers;
+using QCAnalyser.Imaging.Pixels;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 
 namespace QCAnalyser.Imaging.Markings

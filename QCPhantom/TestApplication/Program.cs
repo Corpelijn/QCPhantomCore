@@ -2,7 +2,10 @@
 using QCAnalyser;
 using QCAnalyser.Imaging;
 using QCAnalyser.Imaging.Encoders;
+using QCAnalyser.Imaging.Helpers;
+using QCAnalyser.Imaging.Markings;
 using QCAnalyser.Imaging.Parsers;
+using QCAnalyser.Imaging.Pixels;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -34,8 +37,7 @@ namespace TestApplication
             sw.Start();
 
             ImageAnalyser analyser = new PIX13Analyser(image);
-            analyser.AnalyseImage();
-            //analyser.IsCorrectPhantom();
+            analyser.IsCorrectPhantom();
 
             sw.Stop();
 
@@ -47,8 +49,8 @@ namespace TestApplication
 
             sw.Start();
 
-            //image.AddMarking(new CircleMarking(Color.FromArgb(255, 0, 0), new Point(100, 100), 30));
-            image.SaveToFile(filename, ImageFormat.PNG);
+            image.AddMarking(new CircleMarking(new RGBAPixel(255,0,0), new Point(100, 100), 30));
+            image.SaveToFile(filename, ImageFormat.BMP);
 
             sw.Stop();
 

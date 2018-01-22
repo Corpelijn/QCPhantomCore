@@ -1,6 +1,8 @@
-﻿using QCAnalyser;
+﻿using OpenCvSharp;
+using QCAnalyser;
 using QCAnalyser.Imaging;
 using QCAnalyser.Imaging.Encoders;
+using QCAnalyser.Imaging.Helpers;
 using QCAnalyser.Imaging.Kernel;
 using System;
 using System.Collections.Generic;
@@ -37,7 +39,14 @@ namespace PIX13
 
         #region "Methods"
 
+        private Point[] GetStartingPoints()
+        {
+            List<Point> startPoints = new List<Point>();
 
+            const int spacing = 30;
+
+
+        }
 
         #endregion
 
@@ -56,7 +65,6 @@ namespace PIX13
 
         public override bool IsCorrectPhantom()
         {
-            
             return false;
         }
 

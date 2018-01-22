@@ -1,4 +1,5 @@
 ﻿using QCAnalyser.Imaging.Encoders;
+using QCAnalyser.Imaging.Markings;
 using QCAnalyser.Imaging.Pixels;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace QCAnalyser.Imaging
         private int width;
         private int height;
         private IPixel[] pixels;
+        private List<ImageMarking> markings;
 
         #endregion
 
@@ -23,6 +25,8 @@ namespace QCAnalyser.Imaging
             this.width = width;
             this.height = height;
             pixels = new IPixel[width * height];
+
+            markings = new List<ImageMarking>();
         }
 
         #endregion
@@ -55,7 +59,15 @@ namespace QCAnalyser.Imaging
 
         public void SaveToFile(string filename, ImageFormat format)
         {
-            ImageEncoder.EncodeImage(filename, format, width, height, pixels);
+            if (markings.Count == 0)
+                ImageEncoder.EncodeImage(filename, format, width, height, pixels);
+            else
+                ImageEncoder.EncodeImage(filename, format, width, height, pixels, markings.ToArray());
+        }
+
+        public void AddMarking(ImageMarking marking)
+        {
+            markings.Add(marking);
         }
 
         #endregion

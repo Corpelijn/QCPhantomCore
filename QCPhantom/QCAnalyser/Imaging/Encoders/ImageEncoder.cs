@@ -1,8 +1,8 @@
-﻿using QCAnalyser.Imaging.Markings;
+﻿using QCAnalyser.Imaging.Helpers;
+using QCAnalyser.Imaging.Markings;
 using QCAnalyser.Imaging.Pixels;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -114,7 +114,7 @@ namespace QCAnalyser.Imaging.Encoders
             }
         }
 
-        public static void EncodeImage(string filename, ImageFormat format, int width, int height, ushort[] pixelData, ImageMarking[] markings)
+        public static void EncodeImage(string filename, ImageFormat format, int width, int height, IPixel[] pixelData, ImageMarking[] markings)
         {
             filename = format.CheckFilename(filename);
 
