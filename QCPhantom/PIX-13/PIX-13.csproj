@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenCvSharp3-AnyCPU" Version="3.3.1.20171117" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\QCAnalyser\QCAnalyser.csproj" />
   </ItemGroup>
 

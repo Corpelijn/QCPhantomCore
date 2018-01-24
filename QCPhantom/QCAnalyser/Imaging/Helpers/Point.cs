@@ -21,6 +21,12 @@ namespace QCAnalyser.Imaging.Helpers
             this.y = y;
         }
 
+        public Point(Point source)
+        {
+            this.x = source.x;
+            this.y = source.y;
+        }
+
         #endregion
 
         #region "Properties"
@@ -33,7 +39,10 @@ namespace QCAnalyser.Imaging.Helpers
 
         #region "Methods"
 
-
+        private Point Add(Point point)
+        {
+            return new Point(this.x + point.x, this.y + point.y);
+        }
 
         #endregion
 
@@ -45,7 +54,10 @@ namespace QCAnalyser.Imaging.Helpers
 
         #region "Inherited Methods"
 
-
+        public override string ToString()
+        {
+            return "X = " + x + "; Y = " + y;
+        }
 
         #endregion
 
@@ -57,7 +69,10 @@ namespace QCAnalyser.Imaging.Helpers
 
         #region "Operators"
 
-
+        public static Point operator +(Point left, Point right)
+        {
+            return left.Add(right);
+        }
 
         #endregion
     }

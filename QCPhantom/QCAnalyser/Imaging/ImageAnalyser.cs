@@ -1,6 +1,6 @@
-﻿using System;
+﻿using QCAnalyser.Imaging.Helpers;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 
 namespace QCAnalyser.Imaging

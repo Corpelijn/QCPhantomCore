@@ -63,26 +63,29 @@ namespace QCAnalyser.Imaging.Helpers
 
         #region "Methods"
 
-        public void Expand(int xExpand, int yExpand)
+        public bool IsOutsideBounds(Point point)
         {
-            if (xExpand > 0)
+            return (point.X < Left || point.Y < Top || point.X > Right || point.Y > Bottom);
+        }
+
+        public void Expand(Point farPoint)
+        {
+            if (farPoint.X > Right)
+                width += farPoint.X - Right;
+            if (farPoint.X < Left)
             {
-                width += xExpand;
-            }
-            else if (xExpand < 0)
-            {
-                x += xExpand;
-                width += Math.Abs(xExpand);
+                int diff = Left - farPoint.X;
+                x -= diff;
+                width += diff;
             }
 
-            if (yExpand > 0)
+            if (farPoint.Y > Bottom)
+                height += farPoint.Y - Bottom;
+            if (farPoint.Y < Top)
             {
-                height += yExpand;
-            }
-            else if (yExpand < 0)
-            {
-                y += yExpand;
-                height += Math.Abs(yExpand);
+                int diff = Top - farPoint.Y;
+                y -= diff;
+                height += diff;
             }
         }
 
@@ -96,7 +99,10 @@ namespace QCAnalyser.Imaging.Helpers
 
         #region "Inherited Methods"
 
-
+        public override string ToString()
+        {
+            return $"Left={Left};Right={Right};Top={Top};Bottom={Bottom}";
+        }
 
         #endregion
 

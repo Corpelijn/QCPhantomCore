@@ -1,9 +1,10 @@
-﻿using OpenCvSharp;
-using QCAnalyser;
+﻿using QCAnalyser;
 using QCAnalyser.Imaging;
 using QCAnalyser.Imaging.Encoders;
 using QCAnalyser.Imaging.Helpers;
 using QCAnalyser.Imaging.Kernel;
+using QCAnalyser.Imaging.Markings;
+using QCAnalyser.Imaging.Pixels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,13 +40,44 @@ namespace PIX13
 
         #region "Methods"
 
-        private Point[] GetStartingPoints()
+        private Point[] GetMeasuringPoints()
         {
-            List<Point> startPoints = new List<Point>();
+            List<Point> points = new List<Point>();
 
-            const int spacing = 30;
+            int spacing = image.Width / 30;
 
+            Point up = new Point(0, -spacing);
+            Point right = new Point(spacing, 0);
+            Point down = new Point(0, spacing);
+            Point left = new Point(-spacing, 0);
 
+            Point direction = up;
+            Point currentPosition = new Point(Center);
+            Bounds bounds = new Bounds(Center.X, Center.Y, 1, 1);
+
+            while (bounds.Top > 0 && bounds.Bottom < image.Height && bounds.Left > 0 && bounds.Right < image.Width)
+            {
+                currentPosition += direction;
+
+                image.AddMarking(new CircleMarking(new RGBAPixel(255, 0, 0), currentPosition, 15, true));
+                points.Add(currentPosition);
+
+                if (bounds.IsOutsideBounds(currentPosition))
+                {
+                    if (direction == up)
+                        direction = right;
+                    else if (direction == right)
+                        direction = down;
+                    else if (direction == down)
+                        direction = left;
+                    else if (direction == left)
+                        direction = up;
+                }
+
+                bounds.Expand(currentPosition);
+            }
+
+            return points.OrderBy(x => x.Y).ThenBy(x => x.X).ToArray();
         }
 
         #endregion
@@ -65,6 +97,8 @@ namespace PIX13
 
         public override bool IsCorrectPhantom()
         {
+            Point[] points = GetMeasuringPoints();
+
             return false;
         }
 

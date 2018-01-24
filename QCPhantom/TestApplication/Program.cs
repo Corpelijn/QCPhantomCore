@@ -49,8 +49,7 @@ namespace TestApplication
 
             sw.Start();
 
-            image.AddMarking(new CircleMarking(new RGBAPixel(255,0,0), new Point(100, 100), 30));
-            image.SaveToFile(filename, ImageFormat.BMP);
+            image.SaveToFile(filename, ImageFormat.PNG);
 
             sw.Stop();
 
